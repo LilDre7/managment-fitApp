@@ -44,7 +44,7 @@ export function SalesTracker() {
   }
 
   const updateSale = (id: string) => {
-    setSales(sales.map(sale => 
+    setSales(sales.map(sale =>
       sale.id === id ? { ...sale, item, amount: parseFloat(amount) } : sale
     ))
     setEditingId(null)
@@ -117,4 +117,3 @@ export function SalesTracker() {
     </Card>
   )
 }
-

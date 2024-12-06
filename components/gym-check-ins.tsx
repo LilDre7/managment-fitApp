@@ -31,21 +31,21 @@ export function GymCheckIns() {
   }, [checkIns])
 
   const addCheckIn = () => {
-    if (name && membershipType) {
-      const newCheckIn: CheckIn = {
-        id: Date.now().toString(),
-        name,
-        membershipType,
-        checkInTime: new Date().toLocaleTimeString()
-      }
-      setCheckIns([newCheckIn, ...checkIns])
-      setName('')
-      setMembershipType('')
+  if (name && membershipType) {
+    const newCheckIn: CheckIn = {
+      id: Date.now().toString(),
+      name,
+      membershipType,
+      checkInTime: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
     }
+    setCheckIns([newCheckIn, ...checkIns])
+    setName('')
+    setMembershipType('')
   }
+}
 
   const updateCheckIn = (id: string) => {
-    setCheckIns(checkIns.map(checkIn => 
+    setCheckIns(checkIns.map(checkIn =>
       checkIn.id === id ? { ...checkIn, name, membershipType } : checkIn
     ))
     setEditingId(null)
@@ -81,9 +81,9 @@ export function GymCheckIns() {
               <SelectValue placeholder="Membership Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="standard">Standard</SelectItem>
-              <SelectItem value="premium">Premium</SelectItem>
-              <SelectItem value="vip">VIP</SelectItem>
+              <SelectItem value="GYM">GYM</SelectItem>
+              <SelectItem value="GYM SIMPLE">GYM SIMPLE</SelectItem>
+              <SelectItem value="PERSONAL">PERSONAL</SelectItem>
             </SelectContent>
           </Select>
           <Button onClick={editingId ? () => updateCheckIn(editingId) : addCheckIn}>
@@ -121,4 +121,3 @@ export function GymCheckIns() {
     </Card>
   )
 }
-

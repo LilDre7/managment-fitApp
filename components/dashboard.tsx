@@ -16,10 +16,7 @@ import {
 } from "@/components/ui/table";
 import {
   ArrowUpRight,
-  Bell,
   Download,
-  Plus,
-  User2,
   Edit,
   Trash2,
   ArrowUpDown,
@@ -28,6 +25,8 @@ import { MemberForm } from "./member-form";
 import { GymCheckIns } from "./gym-check-ins";
 import { InventoryTracker } from "./inventory-tracker";
 import { SalesTracker } from "./sales-tracker";
+import { Header } from "./utils/header";
+import { MainContent } from "./utils/main-content";
 
 interface Member {
   id: string;
@@ -86,61 +85,21 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 p-6">
       {/* Header */}
-      <header className="flex items-center justify-between mb-8 bg-white p-4 rounded-lg shadow">
-        <div className="flex items-center gap-4">
-          <div className="bg-blue-500 w-12 h-12 rounded-lg" />
-          <div>
-            <h1 className="font-semibold text-xl">goJim</h1>
-            <p className="text-sm text-gray-500">Gym Management</p>
-          </div>
-        </div>
-        <nav className="flex items-center gap-4">
-          {["Home", "Analytics", "Trainer", "Membership", "Schedule"].map(
-            (item) => (
-              <Button
-                key={item}
-                variant="ghost"
-                className={
-                  activeNav === item ? "text-blue-500" : "text-gray-500"
-                }
-                onClick={() => setActiveNav(item)}
-              >
-                {item}
-              </Button>
-            )
-          )}
-        </nav>
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon">
-            <Bell className="w-5 h-5" />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <User2 className="w-5 h-5" />
-          </Button>
-        </div>
-      </header>
+      <Header activeNav={activeNav} setActiveNav={setActiveNav} />
 
       {/* Main Content */}
       <main className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h2 className="text-3xl font-bold mb-1">Manage your</h2>
-            <h2 className="text-3xl font-bold">Fitness business</h2>
-            <p className="text-gray-500 text-sm mt-2">6 Aug 2024, 07:20am</p>
-          </div>
-          <div className="space-x-4">
-            <Button
-              className="bg-blue-500 text-white hover:bg-blue-600"
-              onClick={() => setIsAddingMember(true)}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              New Member
-            </Button>
-            <Button variant="outline" className="border-gray-300 text-gray-700">
-              Manage Class
-            </Button>
-          </div>
-        </div>
+        {/* Main Content */}
+        <MainContent setIsAddingMember={setIsAddingMember} />
+
+        {/* Gym Check-Ins */}
+        <GymCheckIns />
+
+        {/* Sales Tracker */}
+        <SalesTracker />
+
+        {/* Inventory Tracker */}
+        <InventoryTracker />
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -189,9 +148,8 @@ export default function Dashboard() {
               {Array.from({ length: 100 }).map((_, i) => (
                 <div
                   key={i}
-                  className={`w-3 h-3 rounded-full ${
-                    i < 56 ? "bg-blue-500" : "bg-gray-200"
-                  }`}
+                  className={`w-3 h-3 rounded-full ${i < 56 ? "bg-blue-500" : "bg-gray-200"
+                    }`}
                 />
               ))}
             </div>
@@ -290,15 +248,6 @@ export default function Dashboard() {
             </Table>
           </CardContent>
         </Card>
-
-        {/* Gym Check-Ins */}
-        <GymCheckIns />
-
-        {/* Inventory Tracker */}
-        <InventoryTracker />
-
-        {/* Sales Tracker */}
-        <SalesTracker />
 
         {/* Mobile App Promotion */}
         <Card>

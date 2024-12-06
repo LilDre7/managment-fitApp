@@ -13,10 +13,10 @@ interface InventoryItem {
 
 export function InventoryTracker() {
   const [inventory, setInventory] = useState<InventoryItem[]>([
-    { id: '1', name: 'Large Water Bottles', count: 50 },
-    { id: '2', name: 'Small Water Bottles', count: 100 },
-    { id: '3', name: 'Towels', count: 75 },
-    { id: '4', name: 'Cookies', count: 200 },
+    { id: '1', name: 'Large Water Bottles', count: 0 },
+    { id: '2', name: 'Small Water Bottles', count: 0 },
+    { id: '3', name: 'Towels', count: 0 },
+    { id: '4', name: 'Cookies', count: 0 },
   ])
 
   const [newItemName, setNewItemName] = useState('')
