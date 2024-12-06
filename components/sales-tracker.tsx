@@ -31,8 +31,6 @@ export default function SaleTracker() {
   const [products, setProducts] = useState<Product[]>([])
   const [sales, setSales] = useState<Sale[]>([])
   const [newProduct, setNewProduct] = useState({ name: '', price: '', currency: 'USD' })
-  const [selectedProduct, setSelectedProduct] = useState('')
-  const [quantity, setQuantity] = useState('')
 
   useEffect(() => {
     const storedProducts = localStorage.getItem('gymProducts')
@@ -51,39 +49,38 @@ export default function SaleTracker() {
 
   const addProduct = () => {
     if (newProduct.name && newProduct.price) {
-      setProducts([...products, { 
-        id: Date.now().toString(), 
-        name: newProduct.name, 
+      const newProductEntry = {
+        id: Date.now().toString(),
+        name: newProduct.name,
         price: Number(newProduct.price),
         currency: newProduct.currency as 'USD' | 'CRC'
-      }])
-      setNewProduct({ name: '', price: '', currency: 'USD' })
-    }
-  }
+      };
 
-  const addSale = () => {
-    if (selectedProduct && quantity) {
-      const product = products.find(p => p.id === selectedProduct)
-      if (product) {
-        const sale: Sale = {
-          id: Date.now().toString(),
-          productId: product.id,
-          productName: product.name,
-          quantity: Number(quantity),
-          total: product.price * Number(quantity),
-          currency: product.currency,
-          date: new Date().toLocaleString()
-        }
-        setSales([...sales, sale])
-        setSelectedProduct('')
-        setQuantity('')
-      }
+      // Agregar el nuevo producto a la lista de productos
+      setProducts([...products, newProductEntry]);
+
+      // Crear una nueva entrada de venta
+      const sale: Sale = {
+        id: Date.now().toString(),
+        productId: newProductEntry.id,
+        productName: newProductEntry.name,
+        quantity: 1, // Puedes cambiar esto a la cantidad que desees
+        total: newProductEntry.price * 1, // Total para la cantidad de 1
+        currency: newProductEntry.currency,
+        date: new Date().toLocaleString()
+      };
+
+      // Agregar la nueva venta al historial de ventas
+      setSales([...sales, sale]);
+
+      // Limpiar el formulario de entrada
+      setNewProduct({ name: '', price: '', currency: 'USD' });
     }
   }
 
   const formatCurrency = (amount: number, currency: 'USD' | 'CRC') => {
-    return currency === 'USD' 
-      ? `$${amount.toFixed(2)}` 
+    return currency === 'USD'
+      ? `$${amount.toFixed(2)}`
       : `₡${amount.toFixed(0)}`
   }
 
@@ -95,7 +92,7 @@ export default function SaleTracker() {
   return (
     <div className="container mx-auto pt-3 p-1">
       <h1 className="text-2xl font-bold mb-4">GYM SALE TRACKER</h1>
-      
+
       <Card className="mb-8">
         <CardHeader>
           <CardTitle>Add New Product</CardTitle>
@@ -127,36 +124,6 @@ export default function SaleTracker() {
               </SelectContent>
             </Select>
             <Button onClick={addProduct}><Plus className="mr-2 h-4 w-4" /> Add Product</Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Record Sale</CardTitle>
-          <CardDescription>Select a product and enter the quantity sold</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex space-x-2">
-            <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select Product" />
-              </SelectTrigger>
-              <SelectContent>
-                {products.map((product) => (
-                  <SelectItem key={product.id} value={product.id}>
-                    {product.name} - {formatCurrency(product.price, product.currency)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input
-              type="number"
-              placeholder="Quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-            />
-            <Button onClick={addSale}><Plus className="mr-2 h-4 w-4" /> Record Sale</Button>
           </div>
         </CardContent>
       </Card>
@@ -196,4 +163,3 @@ export default function SaleTracker() {
     </div>
   )
 }
-
