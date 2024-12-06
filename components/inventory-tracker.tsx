@@ -1,86 +1,216 @@
-import { useState } from 'react'
+'use client'
+
+import { useState, useEffect } from 'react'
+import { Plus } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Plus, Minus } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-interface InventoryItem {
-  id: string
+interface Product {
+  id: number
   name: string
-  count: number
+  category: string
+  price: number
+  stock: number
+  currency: 'USD' | 'CRC'
 }
 
-export function InventoryTracker() {
-  const [inventory, setInventory] = useState<InventoryItem[]>([
-    { id: '1', name: 'Large Water Bottles', count: 0 },
-    { id: '2', name: 'Small Water Bottles', count: 0 },
-    { id: '3', name: 'Towels', count: 0 },
-    { id: '4', name: 'Cookies', count: 0 },
-  ])
+export function InventoryManagement() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [newProduct, setNewProduct] = useState<Omit<Product, 'id'>>({ name: '', category: '', price: 0, stock: 0, currency: 'USD' })
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
 
-  const [newItemName, setNewItemName] = useState('')
+  // Cargar productos desde localStorage al iniciar el componente
+  useEffect(() => {
+    const storedProducts = localStorage.getItem('products')
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts))
+    }
+  }, [])
 
-  const addItem = () => {
-    if (newItemName) {
-      const newItem: InventoryItem = {
-        id: Date.now().toString(),
-        name: newItemName,
-        count: 0
+  // Guardar productos en localStorage cada vez que cambien
+  useEffect(() => {
+    localStorage.setItem('products', JSON.stringify(products))
+  }, [products])
+
+  const addProduct = () => {
+    const productToAdd = {
+      ...newProduct,
+      id: Date.now(),
+      price: newProduct.price || 0,
+      stock: newProduct.stock || 0
+    }
+    setProducts([...products, productToAdd])
+    setNewProduct({ name: '', category: '', price: 0, stock: 0, currency: 'USD' })
+  }
+
+  const updateProduct = () => {
+    if (editingProduct) {
+      const updatedProduct = {
+        ...editingProduct,
+        price: editingProduct.price || 0,
+        stock: editingProduct.stock || 0
       }
-      setInventory([...inventory, newItem])
-      setNewItemName('')
+      setProducts(products.map(p => p.id === updatedProduct.id ? updatedProduct : p))
+      setEditingProduct(null)
     }
   }
 
-  const updateCount = (id: string, increment: number) => {
-    setInventory(inventory.map(item => 
-      item.id === id ? { ...item, count: Math.max(0, item.count + increment) } : item
-    ))
+  const deleteProduct = (id: number) => {
+    setProducts(products.filter(p => p.id !== id))
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Inventory Tracker</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex space-x-2 mb-4">
-          <Input
-            placeholder="New item name"
-            value={newItemName}
-            onChange={(e) => setNewItemName(e.target.value)}
-            className="flex-grow"
-          />
-          <Button onClick={addItem}>Add Item</Button>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Item</TableHead>
-              <TableHead>Count</TableHead>
-              <TableHead>Actions</TableHead>
+    <div className="p-4">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Gestión de Inventario</h1>
+        <p>Total de productos: {products.length}</p>
+      </div>
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" /> Añadir Producto
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Añadir Nuevo Producto</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <Input
+              placeholder="Nombre del producto"
+              value={newProduct.name}
+              onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+            />
+            <Input
+              placeholder="Categoría"
+              value={newProduct.category}
+              onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
+            />
+            <Input
+              type="number"
+              placeholder="Precio"
+              value={newProduct.price || ''}
+              onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value ? parseFloat(e.target.value) : 0 })}
+            />
+            <Input
+              type="number"
+              placeholder="Stock"
+              value={newProduct.stock || ''}
+              onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value ? parseInt(e.target.value) : 0 })}
+            />
+            <Select
+              value={newProduct.currency}
+              onValueChange={(value) => setNewProduct({ ...newProduct, currency: value as 'USD' | 'CRC' })}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccionar moneda" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">Dólares (USD)</SelectItem>
+                <SelectItem value="CRC">Colones (CRC)</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={addProduct}>Añadir Producto</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Nombre</TableHead>
+            <TableHead>Categoría</TableHead>
+            <TableHead>Precio</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead>Acciones</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {products.map((product) => (
+            <TableRow key={product.id}>
+              <TableCell>{product.name}</TableCell>
+              <TableCell>{product.category}</TableCell>
+              <TableCell>
+                {product.currency === 'USD' ? '$' : '₡'}{product.price.toFixed(2)}
+              </TableCell>
+              <TableCell>{product.stock}</TableCell>
+              <TableCell>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="mr-2" onClick={() => setEditingProduct(product)}>
+                      Editar
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Editar Producto</DialogTitle>
+                    </DialogHeader>
+                    {editingProduct && (
+                      <div className="grid gap-4 py-4">
+                        <Input
+                          placeholder="Nombre del producto"
+                          value={editingProduct.name}
+                          onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
+                        />
+                        <Input
+                          placeholder="Categoría"
+                          value={editingProduct.category}
+                          onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
+                        />
+                        <Input
+                          type="number"
+                          placeholder="Precio"
+                          value={editingProduct.price || ''}
+                          onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value ? parseFloat(e.target.value) : 0 })}
+                        />
+                        <Input
+                          type="number"
+                          placeholder="Stock"
+                          value={editingProduct.stock || ''}
+                          onChange={(e) => setEditingProduct({ ...editingProduct, stock: e.target.value ? parseInt(e.target.value) : 0 })}
+                        />
+                        <Select
+                          value={editingProduct.currency}
+                          onValueChange={(value) => setEditingProduct({ ...editingProduct, currency: value as 'USD' | 'CRC' })}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Seleccionar moneda" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="USD">Dólares (USD)</SelectItem>
+                            <SelectItem value="CRC">Colones (CRC)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <Button onClick={updateProduct}>Actualizar Producto</Button>
+                      </div>
+                    )}
+                  </DialogContent>
+                </Dialog>
+                <Button variant="destructive" onClick={() => deleteProduct(product.id)}>
+                  Eliminar
+                </Button>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {inventory.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.count}</TableCell>
-                <TableCell>
-                  <Button variant="outline" size="sm" onClick={() => updateCount(item.id, -1)}>
-                    <Minus className="w-4 h-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => updateCount(item.id, 1)} className="ml-2">
-                    <Plus className="w-4 h-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   )
 }
-

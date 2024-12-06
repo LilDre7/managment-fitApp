@@ -11,7 +11,7 @@ export function MainContent({ setIsAddingMember }: MainContent) {
             <div className="pl-2">
                 <h2 className="text-3xl font-bold mb-1">Manage your</h2>
                 <h2 className="text-3xl font-bold">Fitness business</h2>
-                <p className="text-gray-500 text-sm mt-2">6 Aug 2024, 07:20am</p>
+                <p className="text-gray-500 text-base mt-2">Welcome to new database! Organice better your company. ⚡ </p>
             </div>
             <div className="space-x-4 flex items-center">
                 <Button

@@ -23,8 +23,8 @@ import {
 } from "lucide-react";
 import { MemberForm } from "./member-form";
 import { GymCheckIns } from "./gym-check-ins";
-import { InventoryTracker } from "./inventory-tracker";
-import { SalesTracker } from "./sales-tracker";
+import { InventoryManagement } from "./inventory-tracker";
+import SaleTracker from "./sales-tracker";
 import { Header } from "./utils/header";
 import { MainContent } from "./utils/main-content";
 
@@ -96,10 +96,10 @@ export default function Dashboard() {
         <GymCheckIns />
 
         {/* Sales Tracker */}
-        <SalesTracker />
+        <SaleTracker />
 
         {/* Inventory Tracker */}
-        <InventoryTracker />
+        <InventoryManagement />
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

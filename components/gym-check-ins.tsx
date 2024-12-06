@@ -66,7 +66,7 @@ export function GymCheckIns() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Gym Check-Ins</CardTitle>
+        <CardTitle className='text-lg'>GYM CHECK-IN CLIENTS: </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex space-x-2 mb-4">
@@ -81,7 +81,7 @@ export function GymCheckIns() {
               <SelectValue placeholder="Membership Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="GYM">GYM</SelectItem>
+              <SelectItem value="GYM PLAN">GYM PLAN</SelectItem>
               <SelectItem value="GYM SIMPLE">GYM SIMPLE</SelectItem>
               <SelectItem value="PERSONAL">PERSONAL</SelectItem>
             </SelectContent>
@@ -101,7 +101,7 @@ export function GymCheckIns() {
           </TableHeader>
           <TableBody>
             {checkIns.map((checkIn) => (
-              <TableRow key={checkIn.id}>
+              <TableRow className='text-base' key={checkIn.id}>
                 <TableCell>{checkIn.name}</TableCell>
                 <TableCell>{checkIn.membershipType}</TableCell>
                 <TableCell>{checkIn.checkInTime}</TableCell>
