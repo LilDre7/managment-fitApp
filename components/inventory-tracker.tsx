@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,10 +21,12 @@ import {
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
+type Category = 'PRODUCTO' | 'MEMBRESIA'
+
 interface Product {
   id: number
   name: string
-  category: string
+  category: Category
   price: number
   stock: number
   currency: 'USD' | 'CRC'
@@ -32,21 +34,8 @@ interface Product {
 
 export function InventoryManagement() {
   const [products, setProducts] = useState<Product[]>([])
-  const [newProduct, setNewProduct] = useState<Omit<Product, 'id'>>({ name: '', category: '', price: 0, stock: 0, currency: 'USD' })
+  const [newProduct, setNewProduct] = useState<Omit<Product, 'id'>>({ name: '', category: 'PRODUCTO', price: 0, stock: 0, currency: 'USD' })
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-
-  // Cargar productos desde localStorage al iniciar el componente
-  useEffect(() => {
-    const storedProducts = localStorage.getItem('products')
-    if (storedProducts) {
-      setProducts(JSON.parse(storedProducts))
-    }
-  }, [])
-
-  // Guardar productos en localStorage cada vez que cambien
-  useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products))
-  }, [products])
 
   const addProduct = () => {
     const productToAdd = {
@@ -56,7 +45,7 @@ export function InventoryManagement() {
       stock: newProduct.stock || 0
     }
     setProducts([...products, productToAdd])
-    setNewProduct({ name: '', category: '', price: 0, stock: 0, currency: 'USD' })
+    setNewProduct({ name: '', category: 'PRODUCTO', price: 0, stock: 0, currency: 'USD' })
   }
 
   const updateProduct = () => {
@@ -98,11 +87,18 @@ export function InventoryManagement() {
               value={newProduct.name}
               onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
             />
-            <Input
-              placeholder="Categoría"
+            <Select
               value={newProduct.category}
-              onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}
-            />
+              onValueChange={(value) => setNewProduct({ ...newProduct, category: value as Category })}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Seleccionar categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="PRODUCTO">PRODUCTO</SelectItem>
+                <SelectItem value="MEMBRESIA">MEMBRESIA</SelectItem>
+              </SelectContent>
+            </Select>
             <Input
               type="number"
               placeholder="Precio"
@@ -169,11 +165,18 @@ export function InventoryManagement() {
                           value={editingProduct.name}
                           onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
                         />
-                        <Input
-                          placeholder="Categoría"
+                        <Select
                           value={editingProduct.category}
-                          onChange={(e) => setEditingProduct({ ...editingProduct, category: e.target.value })}
-                        />
+                          onValueChange={(value) => setEditingProduct({ ...editingProduct, category: value as Category })}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Seleccionar categoría" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="PRODUCTO">PRODUCTO</SelectItem>
+                            <SelectItem value="MEMBRESIA">MEMBRESIA</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <Input
                           type="number"
                           placeholder="Precio"
@@ -214,3 +217,4 @@ export function InventoryManagement() {
     </div>
   )
 }
+
