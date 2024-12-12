@@ -1,5 +1,7 @@
 "use client";
 
+// Creo que esto cambiar bro
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
