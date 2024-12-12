@@ -2,7 +2,7 @@
 
 // Creo que esto cambiar bro
 
-// <Cr</Cr>
+// Investigar sobre como migrar estpo
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
