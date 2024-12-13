@@ -24,7 +24,7 @@ import {
 import { MemberForm } from "./member-form";
 import { GymCheckIns } from "./gym-check-ins";
 import { InventoryManagement } from "./inventory-tracker";
-import SaleTracker from "./sales-tracker";
+// import SaleTracker from "./sales-tracker";
 import { Header } from "./utils/header";
 import { MainContent } from "./utils/main-content";
 
@@ -96,7 +96,7 @@ export default function Dashboard() {
         <GymCheckIns />
 
         {/* Sales Tracker */}
-        <SaleTracker />
+        {/* <SaleTracker /> */}
 
         {/* Inventory Tracker */}
         <InventoryManagement />

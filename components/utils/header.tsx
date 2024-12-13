@@ -1,5 +1,6 @@
 import { Bell, DatabaseZap, User2 } from "lucide-react";
 import { Button } from "../ui/button";
+import { navLinks } from "@/lib/utils";
 
 interface HeaderProps {
     activeNav: string;
@@ -19,7 +20,7 @@ export function Header({ activeNav, setActiveNav }: HeaderProps) {
                 </div>
             </div>
             <nav className="flex items-center gap-4">
-                {["Home", "Analytics", "Trainer", "Membership", "Schedule"].map(
+                {navLinks.map(
                     (item) => (
                         <Button
                             key={item}

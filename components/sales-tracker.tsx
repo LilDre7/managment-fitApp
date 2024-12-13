@@ -90,7 +90,7 @@ export default function SaleTracker() {
   }
 
   return (
-    <div className="container mx-auto pt-3 p-1">
+    <div className='p-4'>
       <h1 className="text-2xl font-bold mb-4">GYM SALE TRACKER</h1>
 
       <Card className="mb-8">
