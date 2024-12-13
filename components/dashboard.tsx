@@ -1,5 +1,9 @@
 "use client";
 
+// Creo que esto cambiar bro
+
+// Investigar sobre como migrar estpo
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
