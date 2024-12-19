@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Edit, Trash2 } from 'lucide-react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
 interface CheckIn {
   id: string;
@@ -37,7 +39,7 @@ export function GymCheckIns() {
       return;
     }
 
-    const newCheckIn: CheckIn = {
+    const newCheckIn = {
       id: Date.now().toString(),
       name,
       membershipType,
@@ -45,9 +47,12 @@ export function GymCheckIns() {
     };
 
     setCheckIns((prevCheckIns) => [newCheckIn, ...prevCheckIns]);
+    toast('Se agrego exitosamente!', {
+      icon: '👏',
+    });
+
     setName('');
     setMembershipType('');
-    toast.success("Se agregó el usuario exitosamente");
   };
 
   const updateCheckIn = (id: string) => {
@@ -62,7 +67,7 @@ export function GymCheckIns() {
 
   const deleteCheckIn = (id: string) => {
     setCheckIns(checkIns.filter(checkIn => checkIn.id !== id));
-    toast.success("Se eliminó el usuario exitosamente");
+    toast.error("Se eliminó el usuario exitosamente");
   };
 
   const startEditing = (checkIn: CheckIn) => {
@@ -128,7 +133,6 @@ export function GymCheckIns() {
           </Table>
         </CardContent>
       </Card>
-      <ToastContainer />
     </>
   );
 }
