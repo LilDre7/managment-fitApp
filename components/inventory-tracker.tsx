@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast, ToastContainer } from 'react-toastify'; // Importa Toastify
+import { toast } from 'react-hot-toast';
 
 type Category = "PRODUCTO" | "MEMBRESIA";
 
@@ -50,6 +50,17 @@ export function InventoryManagement() {
   });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
+  useEffect(() => {
+    const storedProducts = localStorage.getItem("products");
+    if (storedProducts) {
+      setProducts(JSON.parse(storedProducts));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("products", JSON.stringify(products));
+  }, [products]);
+
   const handleNewProduct = () => {
     if (newProduct.name && newProduct.category && newProduct.price && newProduct.stock && newProduct.currency) {
       setProducts([...products, { ...newProduct, id: products.length + 1 }]);
@@ -59,15 +70,7 @@ export function InventoryManagement() {
     }
   }
 
-  useEffect(() => {
-    const storedProducts = localStorage.getItem("products");
-    if (storedProducts) {
-      setProducts(JSON.parse(storedProducts));
-    }
-  }, []);
-
   const addProduct = () => {
-    // Asegurarse de que newProduct no sea null o undefined
     if (!newProduct) {
       toast.error("El producto no está definido.");
       return;
@@ -75,13 +78,11 @@ export function InventoryManagement() {
 
     const { name = "", price = "", stock = "" } = newProduct;
 
-    // Validación de campos (para evitar falsy values como 0 o "")
     if (!name.trim() || price === '' || stock === '') {
       toast.error("Por favor, complete todos los campos requeridos.");
       return;
     }
 
-    // Validación de valores numéricos
     const parsedPrice = Number(price);
     const parsedStock = Number(stock);
 
@@ -97,10 +98,8 @@ export function InventoryManagement() {
       stock: parsedStock,
     };
 
-    // Actualizar la lista de productos de forma segura
     setProducts((prevProducts) => [...prevProducts, productToAdd]);
 
-    // Limpiar el formulario sin sobrescribir propiedades futuras
     setNewProduct({
       name: "",
       category: "PRODUCTO",
@@ -111,7 +110,6 @@ export function InventoryManagement() {
 
     toast.success("Producto añadido con éxito.");
   };
-
 
   const updateProduct = () => {
     if (editingProduct) {
@@ -352,7 +350,6 @@ export function InventoryManagement() {
           </TableBody>
         </Table>
       </div>
-      <ToastContainer />
     </>
   );
 }
